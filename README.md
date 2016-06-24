@@ -12,6 +12,7 @@ My standard setup on UNIX-like systems.
 6. Update npm: `npm install -g npm`
 7. Install "global" npm modules: `npm_g install`
     - See [.npm_global](https://github.com/aspyrx/.npm_global) for more details
+8. Restart your shell.
 
 That's it!
 
