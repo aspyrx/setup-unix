@@ -10,3 +10,6 @@
 [submodule ".npm_global"]
 	path = .npm_global
 	url = git@github.com:aspyrx/.npm_global
+[submodule ".avn"]
+	path = .avn
+	url = https://github.com/wbyoung/avn
