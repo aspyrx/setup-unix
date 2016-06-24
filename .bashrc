@@ -1,3 +1,9 @@
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -13,8 +19,8 @@ HISTFILESIZE=2000
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# See lesspipe(1) for details
-LESSOPEN="|lesspipe.sh %s"; export LESSOPEN
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
@@ -51,7 +57,7 @@ fi
 unset color_prompt force_color_prompt
 
 # enable color support of ls and also add handy aliases
-if [ -x /opt/local/libexec/gnubin/dircolors ]; then
+if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'

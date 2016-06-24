@@ -1,7 +1,7 @@
-PATH="/opt/local/libexec/gnubin:/opt/local/bin:/opt/local/sbin:$PATH"
-PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
-PATH="/Library/Frameworks/Python.framework/Versions/3.5/bin:${PATH}"
-export PATH
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
 
 # Load nvm, the Node version manager
 export NVM_DIR="$HOME/.nvm"
@@ -38,6 +38,4 @@ export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 
 export EDITOR='nvim'
-
-export IED_GLOBAL_NODE_MODULES=/Users/sxzhang/.ied_modules
 
