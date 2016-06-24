@@ -2,8 +2,9 @@
 *
 
 # Except these:
-# README
+# README and license
 !README.md
+!LICENSE
 
 # config files/folders
 !.gitignore
