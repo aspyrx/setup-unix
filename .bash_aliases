@@ -7,5 +7,7 @@ alias la='ls -A'
 alias l='ls -CF'
 
 # work with npm in ~/.npm_globals
-alias npm_g='cd ~/.npm_global && npm'
+npm_g() {
+    (cd ~/.npm_global && npm $@)
+}
 
