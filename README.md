@@ -10,6 +10,8 @@ My standard setup on UNIX-like systems.
 4. Restart your shell.
 5. Install the desired version of Node.js: `nvm install <node version>`
 6. Update npm: `npm install -g npm`
+7. Install "global" npm modules: `npm_g install`
+    - See [.npm_modules](https://github.com/aspyrx/.npm_global) for more details
 
 That's it!
 
