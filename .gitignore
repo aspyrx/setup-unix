@@ -14,10 +14,10 @@
 !.bashrc
 !.bash_aliases
 !.bash-git-prompt
-!.vim/
+!.vim
 !.config/
 !.vimrc
-!.nvm/
+!.nvm
 !.tern-config
 !.tmux.conf
 
