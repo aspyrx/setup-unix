@@ -1,0 +1,10 @@
+# Ignore all files
+*
+
+# Except these:
+# gitignore
+!.gitignore
+
+# nvim config
+!nvim
+

@@ -1,0 +1,9 @@
+[submodule ".nvm"]
+	path = .nvm
+	url = https://github.com/creationix/nvm.git
+[submodule ".vim"]
+	path = .vim
+	url = git@github.com:aspyrx/.vim.git
+[submodule ".bash-git-prompt"]
+	path = .bash-git-prompt
+	url = https://github.com/magicmonty/bash-git-prompt

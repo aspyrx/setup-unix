@@ -1,0 +1,23 @@
+# Ignore all files
+*
+
+# Except these:
+# README
+!README.md
+
+# config files/folders
+!.gitignore
+!.gitignore_global
+!.gitconfig
+!.gitmodules
+!.bash_profile
+!.bashrc
+!.bash_aliases
+!.bash-git-prompt
+!.vim/
+!.config/
+!.vimrc
+!.nvm/
+!.tern-config
+!.tmux.conf
+
