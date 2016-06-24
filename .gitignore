@@ -22,4 +22,6 @@
 !.tern-config
 !.tmux.conf
 !.npm_global
+!.node-version
+!.npmrc
 
