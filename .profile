@@ -3,12 +3,22 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# set PATH so it includes custom globally-installed node modules
+if [ -d "$HOME/.npm_global/node_modules/.bin" ] ; then
+    PATH="$HOME/.npm_global/node_modules/.bin:$PATH"
+fi
+
 # Load nvm, the Node version manager
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
 # Load avn
 [[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh"
+
+# Abort here, the rest is for bash
+if [ -z "$BASH" ] ; then
+    exit 0
+fi
 
 # If not running interactively, don't do anything
 case $- in

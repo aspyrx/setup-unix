@@ -11,7 +11,7 @@
 !.gitignore_global
 !.gitconfig
 !.gitmodules
-!.bash_profile
+!.profile
 !.bashrc
 !.bash_aliases
 !.bash-git-prompt
