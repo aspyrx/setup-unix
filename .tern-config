@@ -3,9 +3,9 @@
         "browser",
         "ecma6"
     ],
-    "plugins: {
+    "plugins": {
         "modules": {},
         "es_modules": {},
-        "webpack": {},
+        "webpack": {}
     }
 }
