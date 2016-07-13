@@ -52,7 +52,7 @@ if [ "$color_prompt" = yes ]; then
     GIT_PROMPT_END='\n_LAST_COMMAND_INDICATOR_ \033[0;36m$\033[0m '
 
     function prompt_callback {
-        echo -n '\n\033[1;4;30m' # Print newline and underline
+        echo -n '\033[1;4;30m' # Print underline
         printf "%$((COLUMNS + 20))s\r" '\033[0;36m\u\033[0m@\033[0;32m\H \033[0;35m\t\033[0m' # Print right prompt
         echo -n '\033[33;1m\w\033[0m' # Print left prompt
     }
