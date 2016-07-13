@@ -46,10 +46,17 @@ fi
 if [ "$color_prompt" = yes ]; then
     # only show last 3 directories in path
     PROMPT_DIRTRIM=3
+
     # bash-git-prompt
-    GIT_PROMPT_THEME=Solarized
-    GIT_PROMPT_START='\[\033[35m\]\t\[\033[m\]-\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]'
-    GIT_PROMPT_END='$ '
+    GIT_PROMPT_START_USER=''
+    GIT_PROMPT_END='\n_LAST_COMMAND_INDICATOR_ \033[0;36m$\033[0m '
+
+    function prompt_callback {
+        echo -n '\n\033[1;4;30m' # Print newline and underline
+        printf "%$((COLUMNS + 20))s\r" '\033[0;36m\u\033[0m@\033[0;32m\H \033[0;35m\t\033[0m' # Print right prompt
+        echo -n '\033[33;1m\w\033[0m' # Print left prompt
+    }
+
     source ~/.bash-git-prompt/gitprompt.sh
 else
     PS1='\u@\h:\w\$ '
