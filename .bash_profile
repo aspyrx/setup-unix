@@ -12,15 +12,7 @@ fi
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 
-# Load avn
-[[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh"
-
-# Abort here, the rest is for bash
-if [ -z "$BASH" ] ; then
-    exit 0
-fi
-
-# If not running interactively, don't do anything
+# If not running interactively, don't do anything else
 case $- in
     *i*) ;;
       *) return;;
@@ -30,6 +22,9 @@ esac
 if [ -f ~/.bashrc ]; then
     source ~/.bashrc
 fi
+
+# Load avn
+[[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh"
 
 # use colors for less, man, etc.
 export LESS="--RAW-CONTROL-CHARS"
