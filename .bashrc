@@ -49,12 +49,14 @@ if [ "$color_prompt" = yes ]; then
 
     # bash-git-prompt
     GIT_PROMPT_START_USER=''
-    GIT_PROMPT_END='\n_LAST_COMMAND_INDICATOR_ \033[0;36m$\033[0m '
+    GIT_PROMPT_END='\n_LAST_COMMAND_INDICATOR_\033[36m $\033[0m '
 
     function prompt_callback {
-        echo -n '\033[1;4;30m' # Print underline
-        printf "%$((COLUMNS + 20))s\r" '\033[0;36m\u\033[0m@\033[0;32m\H \033[0;35m\t\033[0m' # Print right prompt
-        echo -n '\033[33;1m\w\033[0m' # Print left prompt
+        local rightprompt="$USER@$HOSTNAME `date +%H:%M:%S`"
+        echo -n '\033[1;30m'
+        for ((i=0; i<$((COLUMNS - ${#rightprompt})); i++)); do echo -n ─; done
+        echo -n $rightprompt
+        echo -n '\r\033[0;1;36m\w\033[0m'
     }
 
     source ~/.bash-git-prompt/gitprompt.sh
