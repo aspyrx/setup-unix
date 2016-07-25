@@ -53,7 +53,7 @@ if [ "$color_prompt" = yes ]; then
 
     function prompt_callback {
         local rightprompt="$USER@$HOSTNAME `date +%H:%M:%S`"
-        echo -n '\033[1;30m'
+        echo -n '\r\033[1;30m'
         for ((i=0; i<$((COLUMNS - ${#rightprompt})); i++)); do echo -n ─; done
         echo -n $rightprompt
         echo -n '\r\033[0;1;36m\w\033[0m'
