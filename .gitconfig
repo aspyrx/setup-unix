@@ -6,6 +6,7 @@
 	email = stan.zhang2@gmail.com
 [core]
     excludesfile = ~/.gitignore_global
+    fscache = true
 [alias]
     branches = branch -a
     tags = tag
