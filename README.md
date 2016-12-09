@@ -18,5 +18,4 @@ That's it!
 
 ##### Optional steps
 - [Build Neovim from source](https://github.com/neovim/neovim/wiki/Building-Neovim)
-- [Compile YouCompleteMe](https://github.com/Valloric/YouCompleteMe#mac-os-x)
 

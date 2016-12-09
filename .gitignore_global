@@ -43,3 +43,6 @@ Thumbs.db
 # Local vim config
 .lvimrc
 
+# Local tern port
+.tern-port
+

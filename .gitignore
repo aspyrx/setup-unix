@@ -24,9 +24,6 @@
 !.config/
 !.vimrc
 
-!.tern-config
-!.eslintrc.json
-
 !.nvm
 !.avn
 !.avnrc
