@@ -16,8 +16,6 @@
 !.bashrc
 !.bash_aliases
 
-!.bash-git-prompt
-
 !.tmux.conf
 
 !.vim

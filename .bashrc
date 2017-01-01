@@ -47,21 +47,71 @@ if [ "$color_prompt" = yes ]; then
     # only show last 3 directories in path
     PROMPT_DIRTRIM=3
 
-    # bash-git-prompt
-    GIT_PROMPT_START_USER=''
-    GIT_PROMPT_END='\n_LAST_COMMAND_INDICATOR_\033[36m $\033[0m '
+    black=`tput setaf 0`
+    red=`tput setaf 1`
+    green=`tput setaf 2`
+    yellow=`tput setaf 3`
+    blue=`tput setaf 4`
+    magenta=`tput setaf 5`
+    cyan=`tput setaf 6`
+    white=`tput setaf 7`
+    bold=`tput bold`
+    reset=`tput sgr0`
 
-    function prompt_callback {
-        local rightprompt="$USER@$HOSTNAME `date +%H:%M:%S`"
-        echo -n '\r\033[1;30m'
-        for ((i=0; i<$((COLUMNS - ${#rightprompt})); i++)); do echo -n ─; done
-        echo -n $rightprompt
-        echo -n '\r\033[0;1;36m\w\033[0m'
+    git_status_number() {
+        if [ $1 -eq 0 ]; then
+            local $result=''
+        else
+            local $result="\[$2\]$3$num_changed"
+        fi
+        eval $1=$result
     }
 
-    source ~/.bash-git-prompt/gitprompt.sh
+    prompt_callback() {
+        local exitcode=$?
+        if [ $exitcode -eq 0 ]; then
+            local exitstr="\[$green\]✔ "
+        elif [ $exitcode -gt 128 ]; then
+            local signal=`kill -l $(($exitcode - 128))`
+            local exitstr="\[$red\]✘-$signal "
+            unset signal
+        else
+            local exitstr="\[$red\]✘-$exitcode "
+        fi
+        unset exitcode
+
+        # re-implement PROMPT_DIRTRIM trimming
+        local wdlong=${PWD/$HOME/\~}
+        local wd=`echo $wdlong \
+            | sed -e "s/.*\(\(\/.*\)\{$PROMPT_DIRTRIM\}\)/\1/"`
+
+        if [ "${wdlong:0:1}" = '~' ]; then
+            wd="~/...$wd";
+        else
+            wd="...$wd";
+        fi
+        if [ ${#wd} -ge ${#wdlong} ]; then
+            wd=$wdlong
+        fi
+
+        local status="$USER@$HOSTNAME `date +%H:%M:%S`"
+        local linelen=$((COLUMNS - ${#status} - ${#wd}))
+        if [ $linelen -lt 1 ]; then
+            # tty not wide enough, show abbreviated single-line prompt
+            PS1="\[$bold$cyan\]$wd $exitstr\[$cyan\]\$\[$reset\] "
+        else
+            # create padding line
+            local line
+            printf -v line %${linelen}s
+            line=${line// /─}
+            local statusline="\[$bold$cyan\]$wd\[$black\]$line$status\[$reset\]"
+            PS1="\r$statusline\n$exitstr\[$cyan\]\$\[$reset\] "
+        fi
+    }
+
+    PROMPT_COMMAND=prompt_callback
 else
-    PS1='\u@\h:\w\$ '
+    PS1='\u@\h:\w \$ '
 fi
 unset color_prompt force_color_prompt
 
