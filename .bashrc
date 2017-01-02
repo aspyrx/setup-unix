@@ -60,11 +60,11 @@ if [ "$color_prompt" = yes ]; then
 
     _prompt_line_char='─'
     _prompt_git_status_prefix_branch="\[$_magenta\]"
-    _prompt_git_status_prefix_changed="\[$_blue\]✚"
+    _prompt_git_status_prefix_changed="\[$_bold$_blue\]✚"
     _prompt_git_status_prefix_conflicts="\[$_red\]✘"
     _prompt_git_status_prefix_untracked="\[$_cyan\]…"
     _prompt_git_status_prefix_staged="\[$_yellow\]●"
-    _prompt_git_status_prefix_stashed="\[$_bold$_blue\]■"
+    _prompt_git_status_prefix_stashed="\[$_blue\]■"
     _prompt_git_status_prefix_ahead="↑"
     _prompt_git_status_prefix_behind="↓"
 
@@ -136,7 +136,7 @@ if [ "$color_prompt" = yes ]; then
             done < <(LC_ALL=C git status --porcelain --branch --untracked-files=normal)
             unset line
 
-            local stashfile="$gitdir/logs/ref/stash" wcline
+            local stashfile="$gitdir/logs/refs/stash" wcline
             if [ -e $stashfile ]; then
                 while IFS='' read -r wcline || [ -n "$wcline" ]; do
                     ((stashed++))
