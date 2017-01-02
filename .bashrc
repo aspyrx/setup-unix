@@ -65,8 +65,8 @@ if [ "$color_prompt" = yes ]; then
     _prompt_git_status_prefix_untracked="\[$_cyan\]…"
     _prompt_git_status_prefix_staged="\[$_yellow\]●"
     _prompt_git_status_prefix_stashed="\[$_bold$_blue\]■"
-    _prompt_git_status_prefix_ahead="↑·"
-    _prompt_git_status_prefix_behind="↓·"
+    _prompt_git_status_prefix_ahead="↑"
+    _prompt_git_status_prefix_behind="↓"
 
     _prompt_git_status_prefix() {
         local stat
@@ -108,7 +108,7 @@ if [ "$color_prompt" = yes ]; then
         # inspired by https://github.com/magicmonty/bash-git-prompt/blob/master/gitstatus.sh
         if [ -n "$gitdir" ]; then
             # Determine git status
-            local line statx staty branch
+            local line statx staty branch_line
             local changed=0 conflicts=0 untracked=0 staged=0 stashed=0
             while IFS='' read line; do
                 statx=${line:0:1}
@@ -116,7 +116,7 @@ if [ "$color_prompt" = yes ]; then
                 while [ -n "$statx$staty" ]; do
                     case "$statx$staty" in
                         #two fixed character matches, loop finished
-                        \#\#) branch=${line:3}; branch=${branch%%...*}; break ;;
+                        \#\#) branch_line=${line/'...'/^}; break ;;
                         \?\?) ((untracked++)); break ;;
                         U?) ((conflicts++)); break ;;
                         ?U) ((conflicts++)); break ;;
@@ -134,6 +134,7 @@ if [ "$color_prompt" = yes ]; then
 					unset staty
                 done
             done < <(LC_ALL=C git status --porcelain --branch --untracked-files=normal)
+            unset line
 
             local stashfile="$gitdir/logs/ref/stash" wcline
             if [ -e $stashfile ]; then
@@ -143,14 +144,18 @@ if [ "$color_prompt" = yes ]; then
             fi
             unset stashfile wcline
 
-            local remote ahead=0 behind=0
-            if [[ "$branch" == *"Initial commit on"* ]]; then
+            local branch_fields branch remote ahead=0 behind=0
+            IFS='^' read -ra branch_fields <<< ${branch_line#### }
+            unset branch_line
+            local branch=${branch_fields[0]}
+
+            if [[ $branch == *'Initial commit on'* ]]; then
                 local fields
                 IFS=" " read -ra fields <<< "$branch"
                 branch="${fields[3]}"
                 remote="L"
                 unset fields
-            elif [[ "$branch" == *"no branch"* ]]; then
+            elif [[ $branch == *'no branch'* ]]; then
                 local tag=`git describe --tags --exact-match`
                 if [ -n "$tag" ]; then
                     branch="$tag"
@@ -159,16 +164,16 @@ if [ "$color_prompt" = yes ]; then
                 fi
                 unset tag
             else
-                if [[ "${#branch_fields[@]}" -eq 1 ]]; then
+                if [[ ${#branch_fields[@]} -eq 1 ]]; then
                     remote="L"
                 else
                     local remote_fields remote_field
-                    IFS="[,]" read -ra remote_fields <<< "${branch_fields[1]}"
+                    IFS="[,]" read -ra remote_fields <<< ${branch_fields[1]}
                     for remote_field in "${remote_fields[@]}"; do
-                        if [[ "$remote_field" == *ahead* ]]; then
+                        if [[ $remote_field == *ahead* ]]; then
                             ahead=${remote_field:6}
                         fi
-                        if [[ "$remote_field" == *behind* ]]; then
+                        if [[ $remote_field == *behind* ]]; then
                             behind=${remote_field:7}
                         fi
                     done
@@ -180,18 +185,24 @@ if [ "$color_prompt" = yes ]; then
             fi
 
             _prompt_git_status_prefix branch
-            _prompt_git_status_prefix changed
-            _prompt_git_status_prefix conflicts
-            _prompt_git_status_prefix untracked
-            _prompt_git_status_prefix staged
-            _prompt_git_status_prefix stashed
 
+            local dirty=$((changed + conflicts + untracked + staged + stashed))
             local gitstatus
-            printf -v gitstatus "%s%s%s%s%s%s " \
-                $branch $remote $changed $conflicts $untracked $staged
+            if [ $dirty -gt 0 ]; then
+                _prompt_git_status_prefix changed
+                _prompt_git_status_prefix conflicts
+                _prompt_git_status_prefix untracked
+                _prompt_git_status_prefix staged
+                _prompt_git_status_prefix stashed
+                printf -v gitstatus "%s%s %s%s%s%s%s " \
+                    "$branch" "$remote" \
+                    "$changed" "$conflicts" "$untracked" "$staged" "$stashed"
+            else
+                gitstatus="$branch$remote "
+            fi
 
-            unset line statx staty branch
-            unset changed conflicts untracked staged
+            unset branch dirty
+            unset changed conflicts untracked staged stashed
         fi
 
         if [ "${wdlong:0:1}" = '~' ]; then
