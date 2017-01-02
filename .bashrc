@@ -109,7 +109,7 @@ if [ "$color_prompt" == yes ]; then
         # inspired by https://github.com/magicmonty/bash-git-prompt/blob/master/gitstatus.sh
         if [ -n "$gitdir" ]; then
             # Determine git status
-            local line statx staty branch_line
+            local line statx staty branch upstream
             local changed=0 conflicts=0 untracked=0 staged=0 stashed=0
             while IFS='' read line; do
                 statx=${line:0:1}
@@ -117,7 +117,11 @@ if [ "$color_prompt" == yes ]; then
                 while [ -n "$statx$staty" ]; do
                     case "$statx$staty" in
                         #two fixed character matches, loop finished
-                        \#\#) branch_line=${line/'...'/^}; break ;;
+                        \#\#)
+                            branch="${line#### }"
+                            upstream="${branch##*...}"
+                            branch="${branch%%...*}"
+                            break ;;
                         \?\?) ((untracked++)); break ;;
                         U?) ((conflicts++)); break ;;
                         ?U) ((conflicts++)); break ;;
@@ -145,10 +149,7 @@ if [ "$color_prompt" == yes ]; then
             fi
             unset stashfile wcline
 
-            local branch_fields branch remote ahead=0 behind=0
-            IFS='^' read -ra branch_fields <<< ${branch_line#### }
-            unset branch_line
-            local branch=${branch_fields[0]}
+            local ahead=0 behind=0
 
             if [[ $branch == *'Initial commit on'* ]]; then
                 local fields
@@ -165,11 +166,11 @@ if [ "$color_prompt" == yes ]; then
                 fi
                 unset tag
             else
-                if [[ ${#branch_fields[@]} -eq 1 ]]; then
+                if [ -z "$upstream" ]; then
                     remote="L"
                 else
                     local remote_fields remote_field
-                    IFS="[,]" read -ra remote_fields <<< ${branch_fields[1]}
+                    IFS="[,]" read -ra remote_fields <<< "$upstream"
                     for remote_field in "${remote_fields[@]}"; do
                         if [[ $remote_field == *ahead* ]]; then
                             ahead=${remote_field:6}
