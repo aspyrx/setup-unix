@@ -43,7 +43,7 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-if [ "$color_prompt" = yes ]; then
+if [ "$color_prompt" == yes ]; then
     # only show last 3 directories in path
     PROMPT_DIRTRIM=3
 
@@ -69,13 +69,13 @@ if [ "$color_prompt" = yes ]; then
     _prompt_git_status_prefix_behind="↓"
 
     _prompt_git_status_prefix() {
-        local stat
-        eval stat=\$$1
+        local stat prefix=_prompt_git_status_prefix_$1
+        eval stat="\$$1"
 
-        if [ "$stat" = "0" ]; then
+        if [ $stat == "0" ]; then
             eval $1=''
         else
-            eval $1="\$_prompt_git_status_prefix_$1\$$1$_reset"
+            eval $1="\${$prefix}$stat\\\[$_reset\\\]"
         fi
     }
 
@@ -205,7 +205,7 @@ if [ "$color_prompt" = yes ]; then
             unset changed conflicts untracked staged stashed
         fi
 
-        if [ "${wdlong:0:1}" = '~' ]; then
+        if [ "${wdlong:0:1}" == '~' ]; then
             wd="~/...$wd";
         else
             wd="...$wd";
