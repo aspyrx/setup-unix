@@ -102,7 +102,7 @@ if [ "$color_prompt" == yes ]; then
         if [ -d '.git' ]; then
             local gitdir='.git'
         else
-            local gitdir=`git rev-parse --git-dir > /dev/null 2>&1`
+            local gitdir=`git rev-parse --git-dir 2>/dev/null`
             [ $? -ne 0 ] && unset $gitdir
         fi
 
