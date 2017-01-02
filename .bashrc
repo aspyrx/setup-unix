@@ -60,19 +60,22 @@ if [ "$color_prompt" = yes ]; then
 
     _prompt_line_char='─'
     _prompt_git_status_prefix_branch="\[$_magenta\]"
-    _prompt_git_status_prefix_changed="\[$_blue\]✚$changed"
-    _prompt_git_status_prefix_conflicts="\[$_red\]✘$conflicts"
-    _prompt_git_status_prefix_untracked="\[$_cyan\]…$untracked"
-    _prompt_git_status_prefix_staged="\[$_yellow\]●$staged"
+    _prompt_git_status_prefix_changed="\[$_blue\]✚"
+    _prompt_git_status_prefix_conflicts="\[$_red\]✘"
+    _prompt_git_status_prefix_untracked="\[$_cyan\]…"
+    _prompt_git_status_prefix_staged="\[$_yellow\]●"
+    _prompt_git_status_prefix_stashed="\[$_bold$_blue\]■"
+    _prompt_git_status_prefix_ahead="↑·"
+    _prompt_git_status_prefix_behind="↓·"
 
     _prompt_git_status_prefix() {
         local stat
         eval stat=\$$1
 
-        if [ "$stat" == "0" ]; then
+        if [ "$stat" = "0" ]; then
             eval $1=''
         else
-            eval $1="\$_prompt_git_status_prefix_$1\$$1"
+            eval $1="\$_prompt_git_status_prefix_$1\$$1$_reset"
         fi
     }
 
@@ -102,15 +105,16 @@ if [ "$color_prompt" = yes ]; then
             [ $? -ne 0 ] && unset $gitdir
         fi
 
-        if [ -n $gitdir ]; then
+        # inspired by https://github.com/magicmonty/bash-git-prompt/blob/master/gitstatus.sh
+        if [ -n "$gitdir" ]; then
             # Determine git status
             local line statx staty branch
-            local changed=0 conflicts=0 untracked=0 staged=0
-            while read line; do
+            local changed=0 conflicts=0 untracked=0 staged=0 stashed=0
+            while IFS='' read line; do
                 statx=${line:0:1}
                 staty=${line:1:1}
                 while [ -n "$statx$staty" ]; do
-                    case $statx$staty in
+                    case "$statx$staty" in
                         #two fixed character matches, loop finished
                         \#\#) branch=${line:3}; branch=${branch%%...*}; break ;;
                         \?\?) ((untracked++)); break ;;
@@ -119,26 +123,72 @@ if [ "$color_prompt" = yes ]; then
                         DD) ((conflicts++)); break ;;
                         AA) ((conflicts++)); break ;;
                         #two character matches, first loop
-                        ?M) ((changed++)); unset staty ;;
-                        ?D) ((changed++)); unset staty ;;
-                        ?\ ) unset staty ;;
+                        ?M) ((changed++)); ;;
+                        ?D) ((changed++)); ;;
+                        ?\ ) ;;
                         #single character matches, second loop
                         U) ((conflicts++)); unset statx ;;
                         \ ) unset statx ;;
                         *) ((staged++)); unset statx ;;
                     esac
+					unset staty
                 done
             done < <(LC_ALL=C git status --porcelain --branch --untracked-files=normal)
+
+            local stashfile="$gitdir/logs/ref/stash" wcline
+            if [ -e $stashfile ]; then
+                while IFS='' read -r wcline || [ -n "$wcline" ]; do
+                    ((stashed++))
+                done < $stashfile
+            fi
+            unset stashfile wcline
+
+            local remote ahead=0 behind=0
+            if [[ "$branch" == *"Initial commit on"* ]]; then
+                local fields
+                IFS=" " read -ra fields <<< "$branch"
+                branch="${fields[3]}"
+                remote="L"
+                unset fields
+            elif [[ "$branch" == *"no branch"* ]]; then
+                local tag=`git describe --tags --exact-match`
+                if [ -n "$tag" ]; then
+                    branch="$tag"
+                else
+                    branch=`git rev-parse --short HEAD`
+                fi
+                unset tag
+            else
+                if [[ "${#branch_fields[@]}" -eq 1 ]]; then
+                    remote="L"
+                else
+                    local remote_fields remote_field
+                    IFS="[,]" read -ra remote_fields <<< "${branch_fields[1]}"
+                    for remote_field in "${remote_fields[@]}"; do
+                        if [[ "$remote_field" == *ahead* ]]; then
+                            ahead=${remote_field:6}
+                        fi
+                        if [[ "$remote_field" == *behind* ]]; then
+                            behind=${remote_field:7}
+                        fi
+                    done
+                    _prompt_git_status_prefix ahead
+                    _prompt_git_status_prefix behind
+                    remote=$ahead$behind
+                    unset remote_fields remote_field
+                fi
+            fi
 
             _prompt_git_status_prefix branch
             _prompt_git_status_prefix changed
             _prompt_git_status_prefix conflicts
             _prompt_git_status_prefix untracked
             _prompt_git_status_prefix staged
+            _prompt_git_status_prefix stashed
 
             local gitstatus
-            printf -v gitstatus "%s%s%s%s%s\[$reset\] " \
-                $branch $changed $conflicts $untracked $staged
+            printf -v gitstatus "%s%s%s%s%s%s " \
+                $branch $remote $changed $conflicts $untracked $staged
 
             unset line statx staty branch
             unset changed conflicts untracked staged
