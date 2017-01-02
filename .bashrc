@@ -67,28 +67,29 @@ if [ "$color_prompt" == yes ]; then
     _prompt_git_status_prefix_stashed="\[$_blue\]■"
     _prompt_git_status_prefix_ahead="↑"
     _prompt_git_status_prefix_behind="↓"
+    _prompt_git_status_clean="\[$_green\]✔\[$_reset\]"
 
     _prompt_git_status_prefix() {
-        local stat prefix=_prompt_git_status_prefix_$1
+        local stat prefix="_prompt_git_status_prefix_$1"
         eval stat="\$$1"
 
         if [ $stat == "0" ]; then
             eval $1=''
         else
-            eval $1="\${$prefix}$stat\\\[$_reset\\\]"
+            eval $1="\${$prefix}$stat\\\[\${_reset}\\\]"
         fi
     }
 
     prompt_callback() {
         local exitcode=$?
         if [ $exitcode -eq 0 ]; then
-            local exitstr="\[$_green\]\$\[$_reset\] "
+            local exitstr="\[$_bold$_green\]\$\[$_reset\] "
         elif [ 128 -lt $exitcode ] && [ $exitcode -lt 255 ]; then
             local signal=`kill -l $(($exitcode - 128))`
-            local exitstr="\[$_red\]$signal \$\[$_reset\] "
+            local exitstr="\[$_bold$_red\]$signal\$\[$_reset\] "
             unset signal
         else
-            local exitstr="\[$_red\]$exitcode \$\[$_reset\] "
+            local exitstr="\[$_bold$_red\]$exitcode\$\[$_reset\] "
         fi
         unset exitcode
 
@@ -198,7 +199,7 @@ if [ "$color_prompt" == yes ]; then
                     "$branch" "$remote" \
                     "$changed" "$conflicts" "$untracked" "$staged" "$stashed"
             else
-                gitstatus="$branch$remote "
+                gitstatus="$branch$remote $_prompt_git_status_clean "
             fi
 
             unset branch dirty
