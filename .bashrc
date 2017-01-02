@@ -47,36 +47,45 @@ if [ "$color_prompt" = yes ]; then
     # only show last 3 directories in path
     PROMPT_DIRTRIM=3
 
-    black=`tput setaf 0`
-    red=`tput setaf 1`
-    green=`tput setaf 2`
-    yellow=`tput setaf 3`
-    blue=`tput setaf 4`
-    magenta=`tput setaf 5`
-    cyan=`tput setaf 6`
-    white=`tput setaf 7`
-    bold=`tput bold`
-    reset=`tput sgr0`
+    _black=`tput setaf 0`
+    _red=`tput setaf 1`
+    _green=`tput setaf 2`
+    _yellow=`tput setaf 3`
+    _blue=`tput setaf 4`
+    _magenta=`tput setaf 5`
+    _cyan=`tput setaf 6`
+    _white=`tput setaf 7`
+    _bold=`tput bold`
+    _reset=`tput sgr0`
 
-    git_status_number() {
-        if [ $1 -eq 0 ]; then
-            local $result=''
+    _prompt_line_char='─'
+    _prompt_git_status_prefix_branch="\[$_magenta\]"
+    _prompt_git_status_prefix_changed="\[$_blue\]✚$changed"
+    _prompt_git_status_prefix_conflicts="\[$_red\]✘$conflicts"
+    _prompt_git_status_prefix_untracked="\[$_cyan\]…$untracked"
+    _prompt_git_status_prefix_staged="\[$_yellow\]●$staged"
+
+    _prompt_git_status_prefix() {
+        local stat
+        eval stat=\$$1
+
+        if [ "$stat" == "0" ]; then
+            eval $1=''
         else
-            local $result="\[$2\]$3$num_changed"
+            eval $1="\$_prompt_git_status_prefix_$1\$$1"
         fi
-        eval $1=$result
     }
 
     prompt_callback() {
         local exitcode=$?
         if [ $exitcode -eq 0 ]; then
-            local exitstr="\[$green\]✔ "
-        elif [ $exitcode -gt 128 ]; then
+            local exitstr="\[$_green\]\$\[$_reset\] "
+        elif [ 128 -lt $exitcode ] && [ $exitcode -lt 255 ]; then
             local signal=`kill -l $(($exitcode - 128))`
-            local exitstr="\[$red\]✘-$signal "
+            local exitstr="\[$_red\]$signal \$\[$_reset\] "
             unset signal
         else
-            local exitstr="\[$red\]✘-$exitcode "
+            local exitstr="\[$_red\]$exitcode \$\[$_reset\] "
         fi
         unset exitcode
 
@@ -85,27 +94,75 @@ if [ "$color_prompt" = yes ]; then
         local wd=`echo $wdlong \
             | sed -e "s/.*\(\(\/.*\)\{$PROMPT_DIRTRIM\}\)/\1/"`
 
+
+        if [ -d '.git' ]; then
+            local gitdir='.git'
+        else
+            local gitdir=`git rev-parse --git-dir > /dev/null 2>&1`
+            [ $? -ne 0 ] && unset $gitdir
+        fi
+
+        if [ -n $gitdir ]; then
+            # Determine git status
+            local line statx staty branch
+            local changed=0 conflicts=0 untracked=0 staged=0
+            while read line; do
+                statx=${line:0:1}
+                staty=${line:1:1}
+                while [ -n "$statx$staty" ]; do
+                    case $statx$staty in
+                        #two fixed character matches, loop finished
+                        \#\#) branch=${line:3}; branch=${branch%%...*}; break ;;
+                        \?\?) ((untracked++)); break ;;
+                        U?) ((conflicts++)); break ;;
+                        ?U) ((conflicts++)); break ;;
+                        DD) ((conflicts++)); break ;;
+                        AA) ((conflicts++)); break ;;
+                        #two character matches, first loop
+                        ?M) ((changed++)); unset staty ;;
+                        ?D) ((changed++)); unset staty ;;
+                        ?\ ) unset staty ;;
+                        #single character matches, second loop
+                        U) ((conflicts++)); unset statx ;;
+                        \ ) unset statx ;;
+                        *) ((staged++)); unset statx ;;
+                    esac
+                done
+            done < <(LC_ALL=C git status --porcelain --branch --untracked-files=normal)
+
+            _prompt_git_status_prefix branch
+            _prompt_git_status_prefix changed
+            _prompt_git_status_prefix conflicts
+            _prompt_git_status_prefix untracked
+            _prompt_git_status_prefix staged
+
+            local gitstatus
+            printf -v gitstatus "%s%s%s%s%s\[$reset\] " \
+                $branch $changed $conflicts $untracked $staged
+
+            unset line statx staty branch
+            unset changed conflicts untracked staged
+        fi
+
         if [ "${wdlong:0:1}" = '~' ]; then
             wd="~/...$wd";
         else
             wd="...$wd";
         fi
-        if [ ${#wd} -ge ${#wdlong} ]; then
-            wd=$wdlong
-        fi
+        [ ${#wd} -ge ${#wdlong} ] && wd=$wdlong
 
         local status="$USER@$HOSTNAME `date +%H:%M:%S`"
         local linelen=$((COLUMNS - ${#status} - ${#wd}))
         if [ $linelen -lt 1 ]; then
             # tty not wide enough, show abbreviated single-line prompt
-            PS1="\[$bold$cyan\]$wd $exitstr\[$cyan\]\$\[$reset\] "
+            PS1="\[$_bold$_cyan\]$wd $exitstr"
         else
             # create padding line
             local line
             printf -v line %${linelen}s
-            line=${line// /─}
-            local statusline="\[$bold$cyan\]$wd\[$black\]$line$status\[$reset\]"
-            PS1="\r$statusline\n$exitstr\[$cyan\]\$\[$reset\] "
+            line=${line// /$_prompt_line_char}
+            local statusline="\[$_bold$_cyan\]$wd\[$_black\]$line$status\[$_reset\]"
+            PS1="\r$statusline\n$gitstatus$exitstr"
         fi
     }
 
