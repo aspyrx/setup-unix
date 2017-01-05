@@ -84,7 +84,7 @@ if [ "$color_prompt" == yes ]; then
         local exitcode=$?
         if [ $exitcode -eq 0 ]; then
             local exitstr="\[$_bold$_green\]\$\[$_reset\] "
-        elif [ 128 -lt $exitcode ] && [ $exitcode -lt 255 ]; then
+        elif [ 128 -lt $exitcode ] && [ $exitcode -lt 192 ]; then
             local signal=`kill -l $(($exitcode - 128))`
             local exitstr="\[$_bold$_red\]$signal\$\[$_reset\] "
             unset signal
@@ -181,7 +181,7 @@ if [ "$color_prompt" == yes ]; then
                     done
                     _prompt_git_status_prefix ahead
                     _prompt_git_status_prefix behind
-                    remote=$ahead$behind
+                    remote="$ahead$behind"
                     unset remote_fields remote_field
                 fi
             fi
