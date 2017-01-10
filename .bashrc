@@ -158,11 +158,11 @@ if [ "$color_prompt" == yes ]; then
                 remote="L"
                 unset fields
             elif [[ $branch == *'no branch'* ]]; then
-                local tag=`git describe --tags --exact-match`
+                local tag=`git describe --tags --exact-match 2>/dev/null`
                 if [ -n "$tag" ]; then
                     branch="$tag"
                 else
-                    branch=`git rev-parse --short HEAD`
+                    branch=":`git rev-parse --short HEAD`"
                 fi
                 unset tag
             else
