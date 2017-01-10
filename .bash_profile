@@ -8,9 +8,11 @@ if [ -d "$HOME/.npm_global/node_modules/.bin" ] ; then
     PATH="$HOME/.npm_global/node_modules/.bin:$PATH"
 fi
 
-# Load nvm, the Node version manager
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+# Set up the n Node version manager
+if [ -x "$HOME/.n/bin/n" ] ; then
+    export N_PREFIX="$HOME/.local"
+    PATH="$HOME/.n/bin:$PATH"
+fi
 
 # If not running interactively, don't do anything else
 case $- in
