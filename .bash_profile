@@ -1,8 +1,3 @@
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
-fi
-
 # set PATH so it includes custom globally-installed node modules
 if [ -d "$HOME/.npm_global/node_modules/.bin" ] ; then
     PATH="$HOME/.npm_global/node_modules/.bin:$PATH"
@@ -12,6 +7,11 @@ fi
 if [ -x "$HOME/.n/bin/n" ] ; then
     export N_PREFIX="$HOME/.local"
     PATH="$HOME/.n/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
 fi
 
 # If not running interactively, don't do anything else
