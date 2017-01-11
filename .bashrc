@@ -176,7 +176,7 @@ if [ "$color_prompt" == yes ]; then
                             ahead=${remote_field:6}
                         fi
                         if [[ $remote_field == *behind* ]]; then
-                            behind=${remote_field:7}
+                            behind=${remote_field:8}
                         fi
                     done
                     _prompt_git_status_prefix ahead
