@@ -73,7 +73,7 @@ if [ "$color_prompt" == yes ]; then
         local stat prefix="_prompt_git_status_prefix_$1"
         eval stat="\$$1"
 
-        if [ $stat == "0" ]; then
+        if [ "$stat" == "0" ]; then
             eval $1=''
         else
             eval $1="\${$prefix}$stat\\\[\${_reset}\\\]"
@@ -172,11 +172,12 @@ if [ "$color_prompt" == yes ]; then
                     local remote_fields remote_field
                     IFS="[,]" read -ra remote_fields <<< "$upstream"
                     for remote_field in "${remote_fields[@]}"; do
-                        if [[ $remote_field == *ahead* ]]; then
+                        if [[ $remote_field == *'ahead'* ]]; then
                             ahead=${remote_field:6}
                         fi
-                        if [[ $remote_field == *behind* ]]; then
-                            behind=${remote_field:8}
+                        if [[ $remote_field == *'behind'* ]]; then
+                            behind=${remote_field:7}
+                            behind=${behind# }
                         fi
                     done
                     _prompt_git_status_prefix ahead
