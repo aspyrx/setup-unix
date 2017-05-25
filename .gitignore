@@ -13,14 +13,24 @@
 !.gitmodules
 
 !.bash_profile
+!.bash_profile.darwin.sh
 !.bashrc
 !.bash_aliases
 
 !.tmux.conf
+!.tmux.darwin.conf
 
 !.vim
-!.config/
 !.vimrc
+!.config/
+.config/*
+!.config/nvim/
+
+!.local/
+.local/*
+!.local/bin/
+.local/bin/*
+!.local/bin/n
 
 !.n
 !.avn

@@ -1,3 +1,8 @@
+if [ `uname` = "Darwin" ] ; then
+    # macOS-specific configuration
+    source ~/.bash_profile.darwin.sh
+fi
+
 # set PATH so it includes custom globally-installed node modules
 if [ -d "$HOME/.npm_global/node_modules/.bin" ] ; then
     PATH="$HOME/.npm_global/node_modules/.bin:$PATH"
