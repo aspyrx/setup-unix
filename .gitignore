@@ -38,5 +38,9 @@
 !.node-version
 
 !.npmrc
+!.npmrcs/
+.npmrcs/*
+!.npmrcs/default
+
 !.npm_global
 
