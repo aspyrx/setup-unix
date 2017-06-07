@@ -208,18 +208,19 @@ if [ "$color_prompt" == yes ]; then
         fi
         [ ${#wd} -ge ${#wdlong} ] && wd=$wdlong
 
+        local title="\[\033]2;$PWD\007\]"
         local status="$USER@$HOSTNAME `date +%H:%M:%S`"
         local linelen=$((COLUMNS - ${#status} - ${#wd}))
         if [ $linelen -lt 1 ]; then
             # tty not wide enough, show abbreviated single-line prompt
-            PS1="\[$_bold$_cyan\]$wd $exitstr"
+            PS1="$title\[$_bold$_cyan\]$wd $exitstr"
         else
             # create padding line
             local line
             printf -v line %${linelen}s
             line=${line// /$_prompt_line_char}
             local statusline="\[$_bold$_cyan\]$wd\[$_black\]$line$status\[$_reset\]"
-            PS1="\r$statusline\n$gitstatus$exitstr"
+            PS1="$title\r$statusline\n$gitstatus$exitstr"
         fi
     }
 
