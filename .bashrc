@@ -48,19 +48,22 @@ if [ "$color_prompt" == yes ]; then
     _magenta=`tput setaf 5`
     _cyan=`tput setaf 6`
     _white=`tput setaf 7`
+    _brightblack=`tput setaf 8`
+    _brightred=`tput setaf 9`
+    _brightblue=`tput setaf 12`
+    _bg_brightred=`tput setab 9`
     _bold=`tput bold`
     _reset=`tput sgr0`
 
-    _prompt_line_char='─'
     _prompt_git_status_prefix_branch="\[$_magenta\]"
-    _prompt_git_status_prefix_changed="\[$_bold$_blue\]✚"
+    _prompt_git_status_prefix_changed="\[$_brightblue\]✚"
     _prompt_git_status_prefix_conflicts="\[$_red\]✘"
     _prompt_git_status_prefix_untracked="\[$_cyan\]…"
     _prompt_git_status_prefix_staged="\[$_yellow\]●"
-    _prompt_git_status_prefix_stashed="\[$_blue\]■"
-    _prompt_git_status_prefix_ahead="↑"
-    _prompt_git_status_prefix_behind="↓"
-    _prompt_git_status_clean="\[$_green\]✔\[$_reset\]"
+    _prompt_git_status_prefix_stashed="\[$_magenta\]■"
+    _prompt_git_status_prefix_ahead="\[$_white\]↑"
+    _prompt_git_status_prefix_behind="\[$_white\]↓"
+    _prompt_git_status_clean="\[$_green\]✔"
 
     _prompt_git_status_prefix() {
         local stat prefix="_prompt_git_status_prefix_$1"
@@ -69,20 +72,19 @@ if [ "$color_prompt" == yes ]; then
         if [ "$stat" == "0" ]; then
             eval $1=''
         else
-            eval $1="\${$prefix}$stat\\\[\${_reset}\\\]"
+            eval $1="\${$prefix}$stat"
         fi
     }
 
     prompt_callback() {
         local exitcode=$?
         if [ $exitcode -eq 0 ]; then
-            local exitstr="\[$_bold$_green\]\$\[$_reset\] "
-        elif [ 128 -lt $exitcode ] && [ $exitcode -lt 192 ]; then
-            local signal=`kill -l $(($exitcode - 128))`
-            local exitstr="\[$_bold$_red\]$signal\$\[$_reset\] "
-            unset signal
+            local exitstr="\[$_brightblack\]\[$_green\] \$\[$_reset\] "
         else
-            local exitstr="\[$_bold$_red\]$exitcode\$\[$_reset\] "
+            if [ 128 -lt $exitcode ] && [ $exitcode -lt 192 ]; then
+                exitcode=`kill -l $(($exitcode - 128))`
+            fi
+            local exitstr="\[$_black$_bg_brightred\]\[$_black\] $exitcode \[$_reset$_brightred\] \$\[$_reset\] "
         fi
         unset exitcode
 
@@ -190,13 +192,14 @@ if [ "$color_prompt" == yes ]; then
                 _prompt_git_status_prefix untracked
                 _prompt_git_status_prefix staged
                 _prompt_git_status_prefix stashed
-                printf -v gitstatus "%s%s %s%s%s%s%s " \
+                printf -v gitstatus "%s%s %s%s%s%s%s" \
                     "$branch" "$remote" \
                     "$changed" "$conflicts" "$untracked" "$staged" "$stashed"
             else
-                gitstatus="$branch$remote $_prompt_git_status_clean "
+                gitstatus="$branch$remote $_prompt_git_status_clean"
             fi
 
+            gitstatus="\[$_reset$_brightblack\]\[$_white\] $gitstatus "
             unset branch dirty
             unset changed conflicts untracked staged stashed
         fi
@@ -209,19 +212,8 @@ if [ "$color_prompt" == yes ]; then
         [ ${#wd} -ge ${#wdlong} ] && wd=$wdlong
 
         local title="\[\033]2;$wd\007\]"
-        local status="$USER@$HOSTNAME `date +%H:%M:%S`"
-        local linelen=$((COLUMNS - ${#status} - ${#wd}))
-        if [ $linelen -lt 1 ]; then
-            # tty not wide enough, show abbreviated single-line prompt
-            PS1="$title\[$_bold$_cyan\]$wd $exitstr"
-        else
-            # create padding line
-            local line
-            printf -v line %${linelen}s
-            line=${line// /$_prompt_line_char}
-            local statusline="\[$_bold$_cyan\]$wd\[$_black\]$line$status\[$_reset\]"
-            PS1="$title\r$statusline\n$gitstatus$exitstr"
-        fi
+        local statusline="\[$_cyan$_bold\]$wd \[$_reset\]"
+        PS1="$title\r$statusline$gitstatus$exitstr"
     }
 
     PROMPT_COMMAND=prompt_callback
