@@ -208,7 +208,7 @@ if [ "$color_prompt" == yes ]; then
         fi
         [ ${#wd} -ge ${#wdlong} ] && wd=$wdlong
 
-        local title="\[\033]2;$PWD\007\]"
+        local title="\[\033]2;$wd\007\]"
         local status="$USER@$HOSTNAME `date +%H:%M:%S`"
         local linelen=$((COLUMNS - ${#status} - ${#wd}))
         if [ $linelen -lt 1 ]; then
