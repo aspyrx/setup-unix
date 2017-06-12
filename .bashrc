@@ -211,7 +211,7 @@ if [ "$color_prompt" == yes ]; then
         fi
         [ ${#wd} -ge ${#wdlong} ] && wd=$wdlong
 
-        local title="\[\033]2;$wd\007\]"
+        local title="\[\033]2;$USER@$HOSTNAME:$wd\007\]"
         local statusline="\[$_cyan$_bold\]$wd \[$_reset\]"
         PS1="$title\r$statusline$gitstatus$exitstr"
     }
