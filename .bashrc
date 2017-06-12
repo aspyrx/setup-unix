@@ -211,9 +211,9 @@ if [ "$color_prompt" == yes ]; then
         fi
         [ ${#wd} -ge ${#wdlong} ] && wd=$wdlong
 
-        local title="\[\033]2;$USER@$HOSTNAME:$wd\007\]"
+        local title="\[\e]2;$USER@$HOSTNAME:$wd\a\]"
         local statusline="\[$_cyan$_bold\]$wd \[$_reset\]"
-        PS1="$title\r$statusline$gitstatus$exitstr"
+        PS1="$title\[\r\]$statusline$gitstatus$exitstr"
     }
 
     PROMPT_COMMAND=prompt_callback
