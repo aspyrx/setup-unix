@@ -38,3 +38,26 @@ That's it!
     - See [.npm_global](https://github.com/aspyrx/.npm_global) for more details
 8. Restart your shell.
 
+### Notes
+
+Some personal configuration/state is often contained in these configuration
+files (e.g. npm logins stored in .npmrc). To prevent yourself from accidentally
+adding these to the repo, try:
+
+```sh
+git update-index --assume-unchanged <path>
+```
+
+To start automatically checking for changes again:
+
+```sh
+git update-index --no-assume-unchanged <path>
+```
+
+To show all files being tracked (`assume-unchanged` files are marked with `h`,
+instead of the normal `H`):
+
+```sh
+git ls-files -v
+```
+
