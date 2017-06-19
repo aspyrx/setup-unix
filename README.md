@@ -1,6 +1,10 @@
 # setup-unix
 My standard setup on UNIX-like systems.
 
+### Preview
+
+![Preview](./.setup-unix.png)
+
 ### Usage
 
 ####  macOS-specific instructions

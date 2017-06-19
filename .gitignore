@@ -2,9 +2,10 @@
 *
 
 # Except these:
-# README and license
+# README, license, and preview image
 !README.md
 !LICENSE
+!.setup-unix.png
 
 # config files/folders
 !.gitignore
