@@ -1,9 +1,9 @@
 # This is Git's per-user configuration file.
 [push]
-	default = simple
+    default = simple
 [user]
-	name = Stan Zhang
-	email = stan.zhang2@gmail.com
+    name = Stan Zhang
+    email = stan.zhang2@gmail.com
 [core]
     excludesfile = ~/.gitignore_global
     fscache = true
