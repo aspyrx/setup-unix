@@ -5,8 +5,15 @@ My standard setup on UNIX-like systems.
 
 ![Preview](./.setup-unix.png)
 
+The terminal emulator is [WSLtty](https://github.com/mintty/wsltty), running on
+Windows 10, using the Windows Subsystem for Linux + Ubuntu 16.04.2 LTS.
+
 The font is [Fira Code](https://github.com/tonsky/FiraCode), which has neat
 programming ligatures and is already patched with powerline symbols.
+
+The programs being run are [tmux](https://github.com/tmux/tmux) for multiplexing
+the various shells, [neovim](https://github.com/neovim/neovim) for editing, and
+bash for the shell, all set up using the configurations in this repo.
 
 ### Usage
 
