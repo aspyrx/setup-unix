@@ -5,6 +5,9 @@ My standard setup on UNIX-like systems.
 
 ![Preview](./.setup-unix.png)
 
+The font is [Fira Code](https://github.com/tonsky/FiraCode), which has neat
+programming ligatures and is already patched with powerline symbols.
+
 ### Usage
 
 ####  macOS-specific instructions
