@@ -18,4 +18,6 @@
     amend = commit --amend
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     precommit = diff --cached --diff-algorithm=minimal -w
+[fetch]
+    prune = true
 
