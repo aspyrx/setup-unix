@@ -16,6 +16,7 @@
 !.bash_profile
 !.bash_profile.darwin.sh
 !.bashrc
+!.bash_color_prompt.sh
 !.bash_aliases
 
 !.tmux.conf
