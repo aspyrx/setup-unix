@@ -151,6 +151,8 @@ prompt_callback() {
             fi
         fi
 
+        remote="\[$_reset\]$remote"
+
         _prompt_git_status_prefix branch
 
         local dirty=$((changed + conflicts + untracked + staged + stashed))
@@ -162,7 +164,7 @@ prompt_callback() {
             _prompt_git_status_prefix staged
             _prompt_git_status_prefix stashed
             printf -v gitstatus "%s%s %s%s%s%s%s" \
-                "$branch" "\[$_reset\]$remote" \
+                "$branch" "$remote" \
                 "$changed" "$conflicts" "$untracked" "$staged" "$stashed"
         else
             gitstatus="$branch$remote $_prompt_git_status_clean"
