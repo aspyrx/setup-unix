@@ -34,7 +34,11 @@ bash for the shell, all set up using the configurations in this repo.
 
 #### Installation
 
-1. Clone the repo and move the files into your home directory.
+1. Clone the repo and move the files into your home directory:
+    - Move the regular files: `mv setup-unix/* ~`
+    - Move the dotfiles: `rsync -avh setup-unix/.[!.]* ~`
+        - Thanks to [@mark-walle](https://github.com/mark-walle) for this trick
+          from [issue #1](https://github.com/aspyrx/setup-unix/issues/1).
 2. **IMPORTANT** Modify all the following files with your own name/email:
     - In `.gitconfig`:
         - `name` and `email` should have your own name and email.
