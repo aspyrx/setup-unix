@@ -64,7 +64,7 @@ prompt_callback() {
         local gitdir='.git'
     else
         local gitdir=`git rev-parse --git-dir 2>/dev/null`
-        [ $? -ne 0 ] && unset $gitdir
+        [ $? -ne 0 ] && unset gitdir
     fi
 
     # inspired by https://github.com/magicmonty/bash-git-prompt/blob/master/gitstatus.sh
@@ -106,10 +106,10 @@ prompt_callback() {
         unset line
 
         local stashfile="$gitdir/logs/refs/stash" wcline
-        if [ -e $stashfile ]; then
+        if [ -e "$stashfile" ]; then
             while IFS='' read -r wcline || [ -n "$wcline" ]; do
                 ((stashed++))
-            done < $stashfile
+            done < "$stashfile"
         fi
         unset stashfile wcline
 
