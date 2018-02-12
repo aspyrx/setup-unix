@@ -1,0 +1,12 @@
+# See https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
+set blink-matching-paren on
+set colored-completion-prefix on
+set colored-stats on
+set completion-ignore-case on
+set completion-map-case on
+set editing-mode vi
+set enable-bracketed-paste on
+set show-mode-in-prompt on
+set vi-cmd-mode-string "\1\e[6 q\2"
+set vi-ins-mode-string "\1\e[2 q\2"
+
