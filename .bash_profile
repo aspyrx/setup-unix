@@ -30,9 +30,6 @@ if [ -f ~/.bashrc ]; then
     source ~/.bashrc
 fi
 
-# Load avn
-[[ -s "$HOME/.avn/bin/avn.sh" ]] && source "$HOME/.avn/bin/avn.sh"
-
 # use colors for less, man, etc.
 export LESS="--RAW-CONTROL-CHARS"
 export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
