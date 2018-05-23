@@ -1,3 +1,8 @@
+if [ -f ~/.bash_profile.local.sh ] ; then
+    # local configuration
+    source ~/.bash_profile.local.sh
+fi
+
 if [ `uname` = "Darwin" ] ; then
     # macOS-specific configuration
     source ~/.bash_profile.darwin.sh
