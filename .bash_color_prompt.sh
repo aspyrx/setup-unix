@@ -61,10 +61,14 @@ prompt_callback() {
 
 
     if [ -d '.git' ]; then
-        local gitdir='.git'
+        local gitdir="$PWD/.git"
     else
         local gitdir=`git rev-parse --git-dir 2>/dev/null`
         [ $? -ne 0 ] && unset gitdir
+    fi
+
+    if [ "$gitdir" = "$HOME/.git" ]; then
+        unset gitdir
     fi
 
     # inspired by https://github.com/magicmonty/bash-git-prompt/blob/master/gitstatus.sh
