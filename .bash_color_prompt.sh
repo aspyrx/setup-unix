@@ -6,20 +6,33 @@
 # only show last 3 directories in path
 PROMPT_DIRTRIM=3
 
-_black=`tput setaf 0`
-_red=`tput setaf 1`
-_green=`tput setaf 2`
-_yellow=`tput setaf 3`
-_blue=`tput setaf 4`
-_magenta=`tput setaf 5`
-_cyan=`tput setaf 6`
-_white=`tput setaf 7`
-_brightblack=`tput setaf 8`
-_brightred=`tput setaf 9`
-_brightblue=`tput setaf 12`
-_bg_brightred=`tput setab 9`
-_bold=`tput bold`
-_reset=`tput sgr0`
+# Set up color variables (minimize forking for fast startup).
+# NOTE: This assumes `tput bel` outputs the ASCII `BEL` (`\a`) character, so we
+# can identify it as a separator between each capability's output.
+_vars=''
+_caps=''
+while IFS=',' read var cap; do
+    _vars="$_vars $var"
+    _caps="$_caps"$'\nbel\n'"$cap"
+done <<EOF
+_reset,sgr0
+_bold,bold
+_black,setaf 0
+_red,setaf 1
+_green,setaf 2
+_yellow,setaf 3
+_magenta,setaf 5
+_cyan,setaf 6
+_white,setaf 7
+_brightblack,setaf 8
+_brightred,setaf 9
+_brightblue,setaf 12
+_bg_brightred,setab 9
+EOF
+
+IFS=$'\a' read _ $_vars < <(
+    echo "$_caps" | tput -S
+)
 
 _prompt_git_status_prefix_branch="\[$_magenta\]"
 _prompt_git_status_prefix_changed="\[$_brightblue\]✚"
