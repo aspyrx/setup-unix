@@ -1,3 +1,14 @@
+if [ -n "$_HOME_BASH_PROFILE_SOURCED" ]; then
+    # Source .bashrc if it exists (may skip if non-interactive)
+    if [ -f ~/.bashrc ]; then
+        source ~/.bashrc
+    fi
+    return  # Nothing else to do.
+fi
+
+# Exported to avoid re-sourcing whenever our environment gets inherited.
+export _HOME_BASH_PROFILE_SOURCED=Y
+
 if [ `uname` = "Darwin" ] ; then
     # macOS-specific configuration
     source ~/.bash_profile.darwin.sh
@@ -19,13 +30,7 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
-# If not running interactively, don't do anything else
-case $- in
-    *i*) ;;
-      *) return;;
-esac
-
-# Source .bashrc if it exists
+# Source .bashrc if it exists (may skip if non-interactive)
 if [ -f ~/.bashrc ]; then
     source ~/.bashrc
 fi

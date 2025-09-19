@@ -23,17 +23,19 @@ shopt -s checkwinsize
 command -v lesspipe > /dev/null && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set a fancy prompt (non-color, unless we know we "want" color)
+color_prompt=
 case "$TERM" in
-    xterm*|screen*) color_prompt=yes;;
+    tmux*|xterm*|screen*) color_prompt=yes;;
 esac
-
-if command -v tput > /dev/null && tput setaf 1 >&/dev/null; then
+if \
+    [ -z "$color_prompt" ] && \
+    command -v tput > /dev/null && \
+    tput setaf 1 >&/dev/null
+then
     # We have color support; assume it's compliant with Ecma-48
     # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
     # a case would tend to support setf rather than setaf.)
     color_prompt=yes
-else
-    color_prompt=
 fi
 
 if [ "$color_prompt" == yes ]; then
@@ -41,7 +43,7 @@ if [ "$color_prompt" == yes ]; then
 else
     PS1='\u@\h:\w \$ '
 fi
-unset color_prompt force_color_prompt
+unset color_prompt
 
 # enable color support of ls and also add handy aliases
 if command -v dircolors > /dev/null ; then
