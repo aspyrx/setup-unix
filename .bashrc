@@ -1,3 +1,8 @@
+if [ -f ~/.bashrc.local ]; then
+    # local configuration
+    source ~/.bashrc.local
+fi
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
