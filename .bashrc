@@ -1,8 +1,3 @@
-if [ -f ~/.bashrc.local ]; then
-    # local configuration
-    source ~/.bashrc.local
-fi
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
@@ -78,3 +73,7 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
+if [ -f ~/.bashrc.local ]; then
+    # local configuration
+    source ~/.bashrc.local
+fi
